@@ -6,7 +6,7 @@ class UserDetails(models.Model):
     CUSTOMER = "customer"
     SELLER = "seller"
     USER_TYPES = (
-        (CUSTOMER, 'Customers'),
+        (CUSTOMER, 'Customer'),
         (SELLER, 'Seller'),
     )
 
