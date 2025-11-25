@@ -6,6 +6,15 @@ from .models import ReciepeImagess
 from authentication.models import UserDetails
 from django.core.mail import send_mail
 from django.conf import settings
+import boto3
+from django.contrib.auth import get_user_model
+from datetime import datetime
+import csv
+import io
+
+
+User = get_user_model()
+
 
 
 
@@ -47,3 +56,31 @@ def send_daily_emails():
     recipient_list = [user.user.email for user in user_det]
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
     print("Email sent!")
+
+def get_s3_client():
+    return boto3.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        endpoint_url=getattr(settings, "AWS_S3_ENDPOINT_URL", None),
+        region_name=getattr(settings, "AWS_S3_REGION_NAME", "us-east-1"),
+    )
+
+@shared_task
+def export_users_weekly():
+    users = User.objects.all().values("id", "username", "email")
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "Username", "Email"])
+    for u in users:
+        writer.writerow([u["id"], u["username"], u["email"]])
+    csv_bytes = output.getvalue().encode("utf-8")
+    s3 = get_s3_client()
+    file_name = f"weekly_exports/users_{datetime.now().strftime('%Y-%m-%d_%H%M')}.csv"
+    s3.put_object(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        Key=file_name,
+        Body=csv_bytes,
+        ContentType="text/csv",
+    )
+    return {"status": "success", "file": file_name}

@@ -174,3 +174,13 @@ EMAIL_HOST = "mailhog"
 EMAIL_PORT = 1025
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = "noreply@example.com"
+
+AWS_ACCESS_KEY_ID = "lzxd0Dv7hjL3y24WRpXl"
+AWS_SECRET_ACCESS_KEY = "NKLk7VqQxPMyekHgzsCBbuRjPlAWxYDFYXZfBLK7"
+
+AWS_STORAGE_BUCKET_NAME = "newbucket"
+
+AWS_S3_ENDPOINT_URL = "http://minio:9000"
+AWS_S3_REGION_NAME = "us-east-1"               
+
+AWS_S3_SIGNATURE_VERSION = "s3v4"

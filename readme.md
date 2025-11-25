@@ -56,3 +56,9 @@ The compress_recipe_image task is automatically compress the images uploaded by 
 Have created another asyncronus task which send mails to all sellers at 6 a.m. morning except sat and sun for adding a dish
 
 Have handled the logic of 6 a.m. and mon-fri in periodic task not through logic
+
+
+Using minio for s3 as i wouldn't able to use amazon as it was not supporting s3 for free plan however for amazon s3 just we
+have to change configuration
+
+Nowit upload to s3 every sunday at 6 a.m., It is a scheduled task which fetch user details and upload it to S3

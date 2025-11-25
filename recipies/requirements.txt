@@ -10,3 +10,4 @@ redis
 djangorestframework
 Pillow
 django-celery-beat
+boto3
