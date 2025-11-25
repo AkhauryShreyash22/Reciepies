@@ -25,8 +25,7 @@ from .serializers import (
 )
 from .permissions import IsSeller, IsCustomer
 from drf_spectacular.utils import OpenApiParameter
-
-
+from .tasks import compress_recipe_image
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateReciepeAPI(GenericAPIView):
     permission_classes = [IsAuthenticated, IsSeller]
@@ -45,7 +44,6 @@ class CreateReciepeAPI(GenericAPIView):
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         reciepe = serializer.save()
 
         return Response({
@@ -96,8 +94,9 @@ class UploadReciepeImagessAPI(GenericAPIView):
             return Response({"error": "Not allowed"}, status=403)
 
         for img in images:
-            ReciepeImagess.objects.create(reciepe=reciepe, image=img)
+            img_obj = ReciepeImagess.objects.create(reciepe=reciepe, image=img)
 
+            compress_recipe_image.delay(img_obj.id)
         return Response({
             "message": "Images uploaded successfully",
             "reciepe": ReciepeResponseSerializer(reciepe).data

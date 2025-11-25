@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'reciepe_management'
+    'reciepe_management',
+    'django_celery_beat'
 ]
 
 MIDDLEWARE = [
@@ -163,3 +164,13 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API documentation for Recipe App",
     "VERSION": "1.0.0",
 }
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_TIMEZONE = "Asia/Kolkata"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "mailhog"       
+EMAIL_PORT = 1025
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = "noreply@example.com"
